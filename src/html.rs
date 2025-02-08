@@ -403,7 +403,7 @@ pub fn account_page(rows: Vec<AccountSummaryRow>) -> Markup {
                 }
             }
             div.build-info {
-                "Build " (env!("VERGEN_BUILD_TIMESTAMP"))
+                "Build " (env!("BUILD_TIMESTAMP"))
             }
         },
     )
@@ -675,7 +675,7 @@ fn ingredient_card(ingredient: &db::Ingredient) -> Markup {
 }
 
 fn html_head(page_title: &str) -> Markup {
-    let build_timestamp = env!("VERGEN_BUILD_TIMESTAMP");
+    let build_timestamp = env!("BUILD_TIMESTAMP");
     html! {
         head {
             meta charset="utf-8";

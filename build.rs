@@ -1,11 +1,3 @@
 fn main() {
-    let build = vergen::BuildBuilder::default()
-        .build_timestamp(true)
-        .build()
-        .unwrap();
-    vergen::Emitter::new()
-        .add_instructions(&build)
-        .unwrap()
-        .emit()
-        .unwrap();
+    println!("cargo:rustc-env=BUILD_TIMESTAMP={}", chrono::Utc::now().to_rfc3339());
 }
