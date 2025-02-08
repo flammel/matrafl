@@ -706,7 +706,8 @@ fn redirect_with_session_cookie_response(url: AppUrl, session_id: Option<String>
         None => OffsetDateTime::now_utc() - Duration::days(1),
     });
     cookie.set_http_only(true);
-    cookie.set_same_site(SameSite::Strict);
+    // With SameSite=Strict, the cookie will not be sent when opening the PWA.
+    cookie.set_same_site(SameSite::Lax);
     cookie.set_path("/");
 
     (
