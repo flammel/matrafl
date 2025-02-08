@@ -564,7 +564,7 @@ fn food_select_trigger(consumable: Option<&db::Consumable>) -> Markup {
                     (PhosphorIcon::MagnifyingGlass)
                 }
             }
-            a href=(consumable.map(consumable_url).unwrap_or_default()) class="consumable-select-open" data-consumable-select-open { (PhosphorIcon::ArrowSquareUpRight) }
+            a href=(consumable.map(consumable_url).unwrap_or_default()) tabindex="-1" class="consumable-select-open" data-consumable-select-open { (PhosphorIcon::ArrowSquareUpRight) }
             input type="hidden" id="input-consumable-id" name="consumable_id" required data-consumable-select-id-input value=(consumable.map(|c| c.id.clone()).unwrap_or_default());
             input type="hidden" id="input-consumable-type" name="consumable_type" required data-consumable-select-type-input value=(consumable.map(|c| c.ctype.as_str()).unwrap_or_default());
         }
@@ -583,8 +583,8 @@ fn food_select_dialog(consumables: Vec<db::Consumable>) -> Markup {
         dialog class="consumable-select-dialog" data-consumable-select-dialog {
             div.wrapper {
                 div.header {
-                    input type="text" autofocus;
-                    button type="button" class="gray" data-consumable-select-closer { (PhosphorIcon::X) }
+                    input type="text" autofocus tabindex="2";
+                    button type="button" tabindex="1" class="gray" data-consumable-select-closer { (PhosphorIcon::X) }
                 }
                 div.options {
                     @for consumable in consumables {

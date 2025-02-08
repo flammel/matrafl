@@ -89,6 +89,37 @@ document.querySelectorAll("[data-consumable-select-dialog]").forEach((dialog) =>
       dialog.close();
     });
   });
+
+  // Prevent scrolling.
+  dialog.addEventListener("keydown", (e) => {
+    if (!(e instanceof KeyboardEvent)) {
+      return;
+    }
+
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
+    }
+  });
+
+  dialog.addEventListener("keyup", (e) => {
+    if (!(e instanceof KeyboardEvent)) {
+      return;
+    }
+
+    const current = dialog.querySelector(".option:focus");
+
+    if (e.key === "ArrowUp") {
+      const previous = current?.previousElementSibling;
+      const last = dialog.querySelector(".option:last-child");
+      (previous ?? last)?.focus();
+    }
+
+    if (e.key === "ArrowDown") {
+      const next = current?.nextElementSibling;
+      const first = dialog.querySelector(".option:first-child");
+      (next ?? first)?.focus();
+    }
+  });
 });
 
 if ("serviceWorker" in navigator) {
