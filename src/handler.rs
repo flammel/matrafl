@@ -642,7 +642,11 @@ pub async fn account_read(state: State<AppState>, session: Session) -> Result<Re
     Ok(render_html(html::account_page(rows)))
 }
 
-pub async fn account_login_form() -> Result<Response, AppError> {
+pub async fn account_login_form(session: Option<Session>) -> Result<Response, AppError> {
+    if session.is_some() {
+        return Ok(redirect_to(AppUrl::Home));
+    }
+
     Ok(render_html(html::login_page(None, None)))
 }
 
@@ -654,8 +658,13 @@ pub struct LoginForm {
 
 pub async fn account_login(
     state: State<AppState>,
+    session: Option<Session>,
     Form(form): Form<LoginForm>,
 ) -> Result<Response, AppError> {
+    if session.is_some() {
+        return Ok(redirect_to(AppUrl::Home));
+    }
+
     let error_response = Ok(render_html(html::login_page(
         Some(form.username.clone()),
         Some("Invalid username or password.".to_string()),

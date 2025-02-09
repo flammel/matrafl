@@ -237,6 +237,29 @@ impl FromRequestParts<AppState> for Session {
     }
 }
 
+impl FromRequestParts<AppState> for Option<Session> {
+    type Rejection = AppError;
+
+    async fn from_request_parts(
+        parts: &mut Parts,
+        state: &AppState,
+    ) -> Result<Self, Self::Rejection> {
+        match CookieJar::from_headers(&parts.headers)
+            .get("MATRAFL_SESSION")
+            .map(Cookie::value)
+        {
+            Some(session_id) => match state.db.get_session_user_id(session_id).await? {
+                Some(user_id) => Ok(Some(Session {
+                    user_id: db::UserId(user_id),
+                    session_id: session_id.to_string(),
+                })),
+                None => Ok(None),
+            },
+            None => Ok(None),
+        }
+    }
+}
+
 enum AppUrl {
     Home,
     DaySummary(chrono::NaiveDate),
