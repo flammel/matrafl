@@ -23,6 +23,26 @@ document.querySelectorAll("[data-toggler]").forEach((toggler) => {
   });
 });
 
+document.querySelectorAll("[data-add-consumption-toggler]").forEach((toggler) => {
+  toggler.addEventListener("click", () => {
+    const form = document.querySelector("[data-add-consumption-form]");
+    if (!(form instanceof HTMLFormElement)) {
+      console.warn("Add consumption form not found");
+      return;
+    }
+
+    form.toggleAttribute("hidden");
+
+    if (form.checkVisibility()) {
+      const selectTrigger = form.querySelector("[data-consumable-select-trigger]");
+      const hiddenInput = form.querySelector("[data-consumable-select-id-input]");
+      if (selectTrigger && !hiddenInput.value) {
+        selectTrigger.click();
+      }
+    }
+  });
+});
+
 document.querySelectorAll("[data-search-trigger]").forEach((input) => {
   input.addEventListener("input", () => {
     const value = input.value.toLowerCase().trim();
@@ -90,34 +110,43 @@ document.querySelectorAll("[data-consumable-select-dialog]").forEach((dialog) =>
     });
   });
 
-  // Prevent scrolling.
+  const changeFocus = (e) => {
+    const current = dialog.querySelector(".option:focus");
+    const visible = [...dialog.querySelectorAll(".option:not([hidden])")];
+    const currentIndex = visible.indexOf(current);
+    if (currentIndex === -1) {
+      visible.at(0)?.focus();
+    }
+
+    if (e.key === "ArrowUp") {
+      visible.at(currentIndex - 1)?.focus();
+    }
+
+    if (e.key === "ArrowDown") {
+      if (currentIndex === visible.length - 1) {
+        visible.at(0)?.focus();
+      } else {
+        visible.at(currentIndex + 1)?.focus();
+      }
+    }
+  }
+
   dialog.addEventListener("keydown", (e) => {
     if (!(e instanceof KeyboardEvent)) {
       return;
     }
 
     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      // Prevent scrolling.
       e.preventDefault();
-    }
-  });
-
-  dialog.addEventListener("keyup", (e) => {
-    if (!(e instanceof KeyboardEvent)) {
-      return;
+      changeFocus(e);
     }
 
-    const current = dialog.querySelector(".option:focus");
-
-    if (e.key === "ArrowUp") {
-      const previous = current?.previousElementSibling;
-      const last = dialog.querySelector(".option:last-child");
-      (previous ?? last)?.focus();
-    }
-
-    if (e.key === "ArrowDown") {
-      const next = current?.nextElementSibling;
-      const first = dialog.querySelector(".option:first-child");
-      (next ?? first)?.focus();
+    if (e.key === "Enter") {
+      const visible = [...dialog.querySelectorAll(".option:not([hidden])")];
+      if (visible.length === 1) {
+        visible.at(0)?.click();
+      }
     }
   });
 });

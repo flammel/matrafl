@@ -66,9 +66,9 @@ pub fn day_summary_page(
                     div { span { (format!("{:.0}", total_carbs)) } span { "carbs" } }
                     div { span { (format!("{:.0}", total_protein)) } span { "protein" } }
                 }
-                button type="button" class="green" data-toggler data-toggler-target="form.consumption" { (PhosphorIcon::Plus) };
+                button type="button" class="green" data-add-consumption-toggler { (PhosphorIcon::Plus) };
             }
-            form method="post" action=(AppUrl::Consumptions) class="consumption" hidden[true] {
+            form method="post" action=(AppUrl::Consumptions) data-add-consumption-form hidden[true] {
                 (input_group_date("input-date", "Date", "consumed_at", &date.to_string()));
                 (food_select_trigger(None));
                 (input_group_number("input-quantity", "Quantity", "quantity", ""));
