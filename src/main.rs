@@ -68,7 +68,6 @@ async fn main() {
     let assets_path = std::env::var("ASSETS_PATH").unwrap();
 
     let port = std::env::var("PORT").unwrap().parse::<u16>().unwrap();
-    let bind_addr = format!("127.0.0.1:{}", port);
 
     let db = db::Db::new(db_pool.clone());
 
@@ -130,7 +129,6 @@ async fn main() {
         .with_state(app_state)
         .layer(CompressionLayer::new())
         .layer(TraceLayer::new_for_http());
-    let listener = tokio::net::TcpListener::bind(&bind_addr).await.unwrap();
 
     let sched = JobScheduler::new().await.unwrap();
     sched
@@ -147,8 +145,8 @@ async fn main() {
         .unwrap();
     sched.start().await.unwrap();
 
-    info!(bind_addr, "starting");
-
+    let listener = tokio::net::TcpListener::bind(("127.0.0.1", port)).await.unwrap();
+    info!(addr = ?listener.local_addr().unwrap(), "starting");
     axum::serve(listener, app).await.unwrap();
 }
 
