@@ -1,3 +1,5 @@
+set dotenv-load
+
 [private]
 default:
     just --list --unsorted
@@ -19,3 +21,8 @@ build:
 
 create-user username:
     DATABASE_URL=target/db.sqlite3 cargo run -- create-user {{username}}
+
+deploy: build
+    rsync --archive --verbose --progress --compress ./target/release/matrafl $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/bin/matrafl.tmp
+    rsync --archive --verbose --progress --compress ./assets/ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/assets
+    ssh $DEPLOY_USER@$DEPLOY_HOST "mv $DEPLOY_PATH/bin/matrafl.tmp $DEPLOY_PATH/bin/matrafl"
