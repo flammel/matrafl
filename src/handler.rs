@@ -711,7 +711,7 @@ pub async fn account_export(
 fn redirect_with_session_cookie_response(url: AppUrl, session_id: Option<String>) -> Response {
     let mut cookie = Cookie::new("MATRAFL_SESSION", session_id.clone().unwrap_or_default());
     cookie.set_expires(match session_id {
-        Some(_) => OffsetDateTime::now_utc() + Duration::days(7),
+        Some(_) => OffsetDateTime::now_utc() + Duration::days(365),
         None => OffsetDateTime::now_utc() - Duration::days(1),
     });
     cookie.set_http_only(true);
