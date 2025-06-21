@@ -739,7 +739,7 @@ impl Db {
     }
 
     pub async fn create_session(&self, user_id: &UserId) -> Result<String, sqlx::Error> {
-        let session_id = rand::prelude::thread_rng().gen::<i128>().to_string();
+        let session_id = rand::prelude::thread_rng().gen::<u128>().to_string();
         let hashed_id = base16ct::lower::encode_string(&Sha256::digest(&session_id));
         let now = chrono::Utc::now();
         sqlx::query("INSERT INTO sessions (id, user_id, created_at) VALUES (?, ?, ?)")
