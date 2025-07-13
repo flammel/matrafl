@@ -10,6 +10,8 @@ use sha2::{Digest, Sha256};
 use sqlx::SqlitePool;
 use uuid::Uuid;
 
+pub const SESSION_DAYS: i64 = 7;
+
 #[derive(Debug, Clone)]
 pub struct Db {
     db_pool: SqlitePool,
@@ -761,7 +763,7 @@ impl Db {
     }
 
     pub async fn delete_expired_sessions(&self) -> Result<(), sqlx::Error> {
-        let created_at = chrono::Utc::now() - chrono::Duration::days(7);
+        let created_at = chrono::Utc::now() - chrono::Duration::days(SESSION_DAYS);
         sqlx::query("DELETE FROM sessions WHERE created_at < ?")
             .bind(created_at)
             .execute(&self.db_pool)
